@@ -28,7 +28,7 @@ packages:
   bwu_utils_dev:
     description: bwu_utils_dev
     source: hosted
-    version: "0.1.0-dev.2"
+    version: "0.1.0-dev.3"
   cli_util:
     description: cli_util
     source: hosted
