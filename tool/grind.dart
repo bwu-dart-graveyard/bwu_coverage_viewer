@@ -24,8 +24,8 @@ test() => _test(
 // TODO(zoechi) fix to support other browsers
     [
   'vm',
-  'content-shell', /*'dartium', 'chrome', 'phantomjs', 'firefox',*/
-], runPubServe: true);
+  //'content-shell', /*'dartium', 'chrome', 'phantomjs', 'firefox',*/
+], runPubServe: false);
 
 @Task('Run all VM tests')
 testIo() => _test(['vm']);
