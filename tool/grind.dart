@@ -54,7 +54,6 @@ travis() {}
 @Task('Gather and send coverage data.')
 coverage() => _coverage();
 
-
 _analyze() => new PubApp.global('tuneup').run(['check']);
 
 _check() => run('pub', arguments: ['publish', '-n']);
@@ -86,46 +85,46 @@ _lint() => new PubApp.global('linter')
 
 Future _test(List<String> platforms,
     {bool runPubServe: false, bool runSelenium: false}) async {
-  if (runPubServe || runSelenium) {
-    final seleniumJar = io.Platform.environment['SELENIUM_JAR'];
+  final seleniumJar = io.Platform.environment['SELENIUM_JAR'];
 
-    var pubServe;
-    var selenium;
-    final servers = <Future<RunProcess>>[];
+  var pubServe;
+  var selenium;
+  final servers = <Future<RunProcess>>[];
 
-    try {
-      if (runPubServe) {
-        pubServe = new PubServe();
-        print('start pub serve');
-        servers.add(pubServe.start(directories: const ['test']).then((_) {
-          pubServe.stdout.listen((e) => io.stdout.add(e));
-          pubServe.stderr.listen((e) => io.stderr.add(e));
-        }));
-      }
-      if (runSelenium) {
-        selenium = new SeleniumStandaloneServer();
-        print('start Selenium standalone server');
-        servers.add(selenium.start(seleniumJar, args: []).then((_) {
-          selenium.stdout.listen((e) => io.stdout.add(e));
-          selenium.stderr.listen((e) => io.stderr.add(e));
-        }));
-      }
-
-      await Future.wait(servers);
-
-      new PubApp.local('test')
-        ..run(['--pub-serve=${pubServe.directoryPorts['test']}']
-          ..addAll(platforms.map((p) => '-p${p}')));
-    } finally {
-      if (pubServe != null) {
-        pubServe.stop();
-      }
-      if (selenium != null) {
-        selenium.stop();
-      }
+  try {
+    if (runPubServe) {
+      pubServe = new PubServe();
+      print('start pub serve');
+      servers.add(pubServe.start(directories: const ['test']).then((_) {
+        pubServe.stdout.listen((e) => io.stdout.add(e));
+        pubServe.stderr.listen((e) => io.stderr.add(e));
+      }));
     }
-  } else {
-    new PubApp.local('test').run(platforms.map((p) => '-p${p}').toList());
+    if (runSelenium) {
+      selenium = new SeleniumStandaloneServer();
+      print('start Selenium standalone server');
+      servers.add(selenium.start(seleniumJar, args: []).then((_) {
+        selenium.stdout.listen((e) => io.stdout.add(e));
+        selenium.stderr.listen((e) => io.stderr.add(e));
+      }));
+    }
+
+    await Future.wait(servers);
+
+    if (runPubServe) {
+      new PubApp.local('test').run(
+          ['--pub-serve=${pubServe.directoryPorts['test']}']
+        ..addAll(platforms.map((p) => '-p${p}')));
+    } else {
+      new PubApp.local('test').run([]..addAll(platforms.map((p) => '-p${p}')));
+    }
+  } finally {
+    if (pubServe != null) {
+      pubServe.stop();
+    }
+    if (selenium != null) {
+      selenium.stop();
+    }
   }
 }
 
