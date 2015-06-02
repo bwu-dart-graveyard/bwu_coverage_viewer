@@ -55,7 +55,7 @@ travis() {}
 coverage() => _coverage();
 
 
-_analyze() => Pub.global.run('tuneup', arguments: ['check']);
+_analyze() => new PubApp.global('tuneup').run(['check']);
 
 _check() => run('pub', arguments: ['publish', '-n']);
 
