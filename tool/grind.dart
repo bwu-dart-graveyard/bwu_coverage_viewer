@@ -48,12 +48,35 @@ format() => _format();
 lint() => _lint();
 
 @Task('Travis')
-@Depends(check)
+@Depends(check, coverage)
 travis() {}
+
+@Task('Gather and send coverage data.')
+coverage() => _coverage();
+
 
 _analyze() => Pub.global.run('tuneup', arguments: ['check']);
 
 _check() => run('pub', arguments: ['publish', '-n']);
+
+_coverage() {
+  final String coverageToken = io.Platform.environment['REPO_TOKEN'];
+
+  if (coverageToken != null) {
+    PubApp coverallsApp = new PubApp.global('dart_coveralls');
+    coverallsApp.run([
+      'report',
+      '--token',
+      coverageToken,
+      '--retry',
+      '2',
+      '--exclude-test-files',
+      'test/all.dart'
+    ]);
+  } else {
+    log('Skipping coverage task: no environment variable `REPO_TOKEN` found.');
+  }
+}
 
 _format() => new PubApp.global('dart_style').run(
     ['-w']..addAll(existingSourceDirs), script: 'format');
