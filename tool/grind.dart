@@ -38,7 +38,7 @@ testHtml() => _test(['chrome'], runPubServe: false);
 check() => _check();
 
 @Task('Check source code format')
-checkFormat() => checkFormatTask(['.']);
+checkFormat() => checkFormatTask(existingSourceDirs);
 
 /// format-all - fix all formatting issues
 @Task('Fix all source format issues')
