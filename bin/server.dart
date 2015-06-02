@@ -3,7 +3,6 @@
 
 import 'dart:io' as io;
 import 'dart:async' show Future, Stream;
-import 'dart:convert' show UTF8;
 import 'package:path/path.dart' as path;
 import 'package:args/args.dart';
 import 'package:shelf/shelf.dart' as shelf;
