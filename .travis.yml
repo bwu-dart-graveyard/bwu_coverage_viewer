@@ -9,9 +9,9 @@ script: dart -c tool/grind.dart travis
 # sudo in your scripts.
 sudo: false
 
-branches:
-  only:
-    - master
+#branches:
+#  only:
+#    - master
 
 cache:
   directories:
